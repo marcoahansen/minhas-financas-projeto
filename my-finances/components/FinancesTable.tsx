@@ -112,6 +112,7 @@ const FinancesTable = ({ expenses, onAddExpense, onEditExpense, onRemoveExpense 
                       onClick = {() =>{
                         onRemoveExpense(expense)
                       }}
+                      
                     />
                   </Td>
                 </Tr>

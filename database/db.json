@@ -64,20 +64,6 @@
       "description": "Passagem de ônibus público",
       "category": "Transporte",
       "value": 10
-    },
-    {
-      "description": "Produtos de Limpeza",
-      "value": 90,
-      "category": "Supermercado",
-      "date": 1657888353280,
-      "id": 6
-    },
-    {
-      "description": "Almoço",
-      "value": 22,
-      "category": "Comida",
-      "date": 1657897878988,
-      "id": 7
     }
   ]
 }

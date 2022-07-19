@@ -1,4 +1,4 @@
-import { Button, FormControl, FormLabel, Grid, GridItem, Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, NumberDecrementStepper, NumberIncrementStepper, NumberInput, NumberInputField, NumberInputStepper, Select, useToast } from "@chakra-ui/react";
+import { Button, FormControl, FormLabel, Grid, GridItem, Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, NumberDecrementStepper, NumberIncrementStepper, NumberInput, NumberInputField, NumberInputStepper, Select, Spinner, useToast } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { IExpenses } from "../models/IExpense";
 import { getCategories, saveExpense } from "../services/api";
@@ -130,6 +130,15 @@ function NewExpenseModal({ isOpen, expense, onSave, onClose }: Props) {
                         disabled={isLoading}
                     >
                         {expense ? 'Editar' : 'Adicionar'}
+                        {isLoading && 
+                        <Spinner
+                            thickness='4px'
+                            speed='0.65s'
+                            emptyColor='gray.300'
+                            color='blue.800'
+                            size='md'
+                            ms={4}
+                        />}
                     </Button>
                 </ModalFooter>
             </ModalContent>

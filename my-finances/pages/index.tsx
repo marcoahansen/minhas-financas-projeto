@@ -2,7 +2,7 @@ import type { NextPage } from "next";
 import Head from "next/head";
 import styles from "../styles/Home.module.css";
 import FinancesTable from "../components/FinancesTable";
-import { Heading, useDisclosure } from "@chakra-ui/react";
+import { Heading, useDisclosure, useToast } from "@chakra-ui/react";
 import NewExpenseModal from "../components/NewExpenseModal";
 import { useState, useEffect } from "react";
 import { IExpenses } from "../models/IExpense";
@@ -10,6 +10,7 @@ import { getExpenses, removeExpense } from "../services/api";
 
 const Home: NextPage = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const toast = useToast();
 
   const [expenses, setExpenses] = useState<IExpenses[]>([]);
   const [expenseToEdit, setExpenseToEdit] = useState<IExpenses>();
@@ -43,6 +44,12 @@ const Home: NextPage = () => {
           onRemoveExpense={async (expense) => {
             await removeExpense(expense);
             fetchExpenses();
+            toast({
+              title: 'Despesa excluida',
+              description: 'Despesa foi excluida com sucesso',
+              status: 'error',
+              position: 'top-right'
+            })
           }}
         />
         {isOpen ?(
