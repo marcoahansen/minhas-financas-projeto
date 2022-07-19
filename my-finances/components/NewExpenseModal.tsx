@@ -1,36 +1,31 @@
 import { Button, FormControl, FormLabel, Grid, GridItem, Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, NumberDecrementStepper, NumberIncrementStepper, NumberInput, NumberInputField, NumberInputStepper, Select, Spinner, useToast } from "@chakra-ui/react";
-import { useEffect, useState } from "react";
+import axios from 'axios';
+import { useEffect, useState, ChangeEvent } from "react";
+import ICategories from '../models/ICategories';
 import { IExpenses } from "../models/IExpense";
-import { getCategories, saveExpense } from "../services/api";
+import { saveExpense } from "../services/api";
 
 interface Props {
     isOpen: boolean;
     expense?: IExpenses;
     onSave: () => void;
     onClose: () => void;
+    categories: ICategories[];
 }
 
-function NewExpenseModal({ isOpen, expense, onSave, onClose }: Props) {
+function NewExpenseModal({ isOpen, expense, onSave, onClose, categories }: Props) {
     const toast = useToast();
     const [description, setDescription] = useState('');
     const [value, setValue] = useState(1);
     const [category, setCategory] = useState<string>();
     
     const [isLoading, setLoading] = useState(false);
-    
-    const [categories, setCategories] = useState<string[]>([]);
 
     useEffect (()=>{
         setDescription(expense?.description ?? '')
         setValue(expense?.value ?? 1)
         setCategory(expense?.category);
     },[expense])
-    
-
-  useEffect(() => {
-    getCategories()
-      .then((categories) => setCategories(categories.map(category => category.name)));
-  }, [])
 
   const handleAddExpense = async () => {
     if (!category){
@@ -79,7 +74,7 @@ function NewExpenseModal({ isOpen, expense, onSave, onClose }: Props) {
                                 <Input
                                     placeholder="Descrição"
                                     value={description}
-                                    onChange={(e) => setDescription(e.target.value)}
+                                    onChange={(e: ChangeEvent<HTMLInputElement>) => setDescription(e.target.value)}
                                 />
                             </FormControl>
                         </GridItem>
@@ -89,8 +84,8 @@ function NewExpenseModal({ isOpen, expense, onSave, onClose }: Props) {
                                 <FormLabel htmlFor="value">Valor</FormLabel>
                                 <NumberInput 
                                   min={1}
-                                  value={value}
-                                  onChange={(_, value) => setValue(value)}
+                                  value={String(value).replace('.',',')}
+                                  onChange={(_: string, value: number) => setValue(value)}
                                 >
                                     <NumberInputField id="value" />
                                     <NumberInputStepper>
@@ -108,13 +103,13 @@ function NewExpenseModal({ isOpen, expense, onSave, onClose }: Props) {
                                     id="category"
                                     placeholder="Categoria"
                                     value={category}
-                                    onChange={(e) => setCategory(e.target.value)}
+                                    onChange={(e: ChangeEvent<HTMLSelectElement>) => setCategory(e.target.value)}
                                 >
                                   {categories.map(category => (
-                                    <option key={category} value={category}>
-                                      {category}
-                                    </option>
-                                  ))}
+                                        <option key={category.id} value={category.name}>
+                                            {category.name}
+                                        </option>
+                                    ))}
                                 </Select>
                             </FormControl>
                         </GridItem>
@@ -144,6 +139,16 @@ function NewExpenseModal({ isOpen, expense, onSave, onClose }: Props) {
             </ModalContent>
         </Modal>
     );
+}
+
+export async function getServerSideProps() {
+    const response = await axios.get('http://localhost:3000/api/categories');
+  
+    return {
+      props: {
+        categories: response.data
+      },
+    }
 }
 
 export default NewExpenseModal;
